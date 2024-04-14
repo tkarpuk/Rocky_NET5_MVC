@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Rocky.Models;
 
 namespace Rocky.Data
 {
@@ -7,5 +8,7 @@ namespace Rocky.Data
         protected ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
+
+        public DbSet<Category> Category { get; set; }
     }
 }
