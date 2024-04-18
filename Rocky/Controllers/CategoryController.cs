@@ -20,13 +20,13 @@ namespace Rocky.Controllers
             return View(objList);
         }
 
-        // GET
+        // GET Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST
+        // POST Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category obj)
@@ -34,6 +34,40 @@ namespace Rocky.Controllers
             if (ModelState.IsValid)
             {
                 _db.Category.Add(obj);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        // GET
+        public IActionResult Edit(int? id)
+        {
+            if (id is null || id < 1)
+            {
+                return NotFound();
+            }
+
+            var obj = _db.Category.Find(id);
+            if (obj is null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
+
+        // POST Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Category obj)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Category.Update(obj);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
