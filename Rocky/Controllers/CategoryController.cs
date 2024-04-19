@@ -77,7 +77,7 @@ namespace Rocky.Controllers
             }
         }
 
-        // GET Edit
+        // GET Delete
         public IActionResult Delete(int? id)
         {
             if (id is null || id < 1)
@@ -94,7 +94,7 @@ namespace Rocky.Controllers
             return View(obj);
         }
 
-        // POST Edit
+        // POST Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
