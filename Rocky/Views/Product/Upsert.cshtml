@@ -40,7 +40,7 @@
                         <label asp-for="Product.Description"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Product.Description" class="form-control" />
+                        <textarea asp-for="Product.Description" class="form-control summernote"></textarea>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -97,12 +97,18 @@
             <partial name="_ValidationScriptsPartial" />
     }
     <script>
+        $(document).ready(function() {
+            $('.summernote').summernote({
+                height: 250
+            });
+        });
+
         function validateInput() {
             if (document.getElementById("uploadBox").value == "") 
             {
                 Swal.fire({
                     title: "Error!",
-                    text: "Please upload en Image!",
+                    text: "Please upload an Image!",
                     icon: "error"
                 });
                 return false;
