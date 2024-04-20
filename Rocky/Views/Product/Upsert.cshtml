@@ -94,6 +94,20 @@
 
 @section Scripts {
     @{
-        <partial name="_ValidationScriptsPartial" />
+            <partial name="_ValidationScriptsPartial" />
     }
+    <script>
+        function validateInput() {
+            if (document.getElementById("uploadBox").value == "") 
+            {
+                Swal.fire({
+                    title: "Error!",
+                    text: "Please upload en Image!",
+                    icon: "error"
+                });
+                return false;
+            }
+            return true;
+        }
+    </script>
 }
