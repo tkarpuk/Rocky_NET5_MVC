@@ -2,6 +2,6 @@
 {
     public static class GeneralConstant
     {
-        public static string ImagePath = @"";
+        public static string ImagePath = @"\images\product\";
     }
 }
