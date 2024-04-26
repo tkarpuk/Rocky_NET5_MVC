@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Rocky.Data;
 using Rocky.Models;
 using Rocky.Models.ViewModels;
@@ -36,13 +37,6 @@ namespace Rocky.Controllers
         // GET Upsert
         public IActionResult Upsert(int? id)
         {
-            //IEnumerable<SelectListItem> CategoryDropDown = _db.Category
-            //    .Select(c => new SelectListItem()
-            //    {
-            //        Text = c.Name,
-            //        Value = c.Id.ToString()
-            //    });
-            //ViewBag.CategoryDropDown = CategoryDropDown;
             ProductVM productVM = new ProductVM()
             {
                 Product = new Product(),
@@ -93,45 +87,35 @@ namespace Rocky.Controllers
                 else
                 {
                     // update
+                    var oldObj = _db.Product.AsNoTracking().FirstOrDefault(p => p.Id == productVM.Product.Id);
+
+                    if (files.Count > 0)
+                    {
+                        string uploadPath = webRootPath + GeneralConstant.ImagePath;
+                        string newFile = Guid.NewGuid().ToString();
+                        string extension = Path.GetExtension(files[0].FileName);
+
+                        string oldFile = Path.Combine(uploadPath, oldObj.Image);
+                        if (System.IO.File.Exists(oldFile))
+                        {
+                            System.IO.File.Delete(oldFile);
+                        }
+
+                        using (var fileStream = new FileStream(Path.Combine(uploadPath, newFile + extension), FileMode.Create))
+                        {
+                            files[0].CopyTo(fileStream);
+                        }
+
+                        productVM.Product.Image = newFile + extension;
+                    }
+                    else
+                    {
+                        productVM.Product.Image = oldObj.Image;
+                    }
+
+                    _db.Product.Update(productVM.Product);
                 }
 
-                //_db.Product.Add(obj);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View();
-            }
-        }
-        /*
- 
-
-        // GET Edit
-        public IActionResult Edit(int? id)
-        {
-            if (id is null || id < 1)
-            {
-                return NotFound();
-            }
-
-            var obj = _db.Category.Find(id);
-            if (obj is null)
-            {
-                return NotFound();
-            }
-
-            return View(obj);
-        }
-
-        // POST Edit
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(Category obj)
-        {
-            if (ModelState.IsValid)
-            {
-                _db.Category.Update(obj);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -149,30 +133,37 @@ namespace Rocky.Controllers
                 return NotFound();
             }
 
-            var obj = _db.Category.Find(id);
-            if (obj is null)
+            Product product = _db.Product.Include(c => c.Category).FirstOrDefault(p => p.Id == id);
+            if (product is null)
             {
                 return NotFound();
             }
 
-            return View(obj);
+            return View(product);
         }
 
         // POST Delete
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            var obj = _db.Category.Find(id);
+            var obj = _db.Product.Find(id);
             if (obj is null)
             {
                 return NotFound();
             }
 
-            _db.Category.Remove(obj);
+            string webRootPath = _webHostEnvironment.WebRootPath;
+            string uploadPath = webRootPath + GeneralConstant.ImagePath;
+            string fileName = Path.Combine(uploadPath, obj.Image);
+            if (System.IO.File.Exists(fileName))
+            {
+                System.IO.File.Delete(fileName);
+            }
+
+            _db.Product.Remove(obj);
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
-        */
     }
 }
