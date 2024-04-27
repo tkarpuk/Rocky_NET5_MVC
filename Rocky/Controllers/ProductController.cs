@@ -29,6 +29,7 @@ namespace Rocky.Controllers
             foreach(var obj in objList)
             {
                 obj.Category = _db.Category.FirstOrDefault(c => c.Id == obj.CategoryId);
+                obj.ApplicationType = _db.ApplicationType.FirstOrDefault(a => a.Id == obj.ApplicationTypeId);
             }
 
             return View(objList);
@@ -45,6 +46,12 @@ namespace Rocky.Controllers
                     {
                         Text = c.Name,
                         Value = c.Id.ToString()
+                    }),
+                ApplicationTypeSelectList = _db.ApplicationType.Select(a => 
+                    new SelectListItem()
+                    {
+                        Text = a.Name,
+                        Value = a.Id.ToString()
                     })
             };
 
@@ -127,6 +134,12 @@ namespace Rocky.Controllers
                         Text = c.Name,
                         Value = c.Id.ToString()
                     });
+                productVM.ApplicationTypeSelectList = _db.ApplicationType.Select(a =>
+                    new SelectListItem()
+                    {
+                        Text = a.Name,
+                        Value = a.Id.ToString()
+                    });
 
                 return View(productVM);
             }
@@ -140,7 +153,7 @@ namespace Rocky.Controllers
                 return NotFound();
             }
 
-            Product product = _db.Product.Include(c => c.Category).FirstOrDefault(p => p.Id == id);
+            Product product = _db.Product.Include(c => c.Category).Include(a => a.ApplicationType).FirstOrDefault(p => p.Id == id);
             if (product is null)
             {
                 return NotFound();
