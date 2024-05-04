@@ -34,6 +34,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Product</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Reg Admin</a>
+                        </li>
+                        <li class="nav-item">
                             @if (httpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(GeneralConstant.SessionCart) is not null)
                             {
                                 <a asp-action="Index" asp-controller="Cart" class="nav-link">

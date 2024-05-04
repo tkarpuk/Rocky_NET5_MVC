@@ -96,6 +96,16 @@ namespace Rocky.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    if (User.IsInRole(GeneralConstant.AdminRole))
+                    {
+                        // if an Admin has logger in and try to register new user
+                        await _userManager.AddToRoleAsync(user, GeneralConstant.AdminRole);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, GeneralConstant.CustomerRole);
+                    }                    
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
