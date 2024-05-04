@@ -40,7 +40,7 @@
                                     @{
                                         var count = httpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(GeneralConstant.SessionCart).Count;
                                     }
-                                    <i class="fas fa-shopping-cart"></i> &nbsp; @count
+                                    <i class="fas fa-shopping-cart"></i> &nbsp; (@count)
                                 </a>
                             }
                             else

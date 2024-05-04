@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 using Rocky.Data;
 using Rocky.Models;
 using Rocky.Models.ViewModels;
+using Rocky.Utility;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -44,6 +46,18 @@ namespace Rocky.Controllers
             };
 
             return View(detailsVM);
+        }
+
+        [HttpPost, ActionName("Details")]        
+        public IActionResult DetailsPost(int id)
+        {
+            List<ShoppingCart> shoppingCarts = HttpContext.Session.Get<List<ShoppingCart>>(GeneralConstant.SessionCart) 
+                ?? new List<ShoppingCart>();
+
+            shoppingCarts.Add(new ShoppingCart() { ProductId = id });
+            HttpContext.Session.Set<List<ShoppingCart>>(GeneralConstant.SessionCart, shoppingCarts);
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
