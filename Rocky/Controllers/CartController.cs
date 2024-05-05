@@ -28,5 +28,16 @@ namespace Rocky.Controllers
 
             return View(prodList);
         }
+
+        public IActionResult Remove(int id)
+        {
+            List<ShoppingCart> cart = HttpContext.Session.Get<List<ShoppingCart>>(GeneralConstant.SessionCart)
+                ?? new List<ShoppingCart>();
+
+            cart.Remove(cart.FirstOrDefault(x => x.ProductId == id));
+            HttpContext.Session.Set<List<ShoppingCart>>(GeneralConstant.SessionCart, cart);
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
